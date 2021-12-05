@@ -56,7 +56,7 @@ Dredge is an open source project that is just getting started. Our guiding princ
 
 Do you want to get a demo, try it out yourself or contribute? Let use know!
 
-<form id="involved" action="">
+<form id="involved" action="https://send.pageclip.co/cmwVdVkJXG1zMYsyNirGDLHhhlJGipyL/get-involved" method="post">
   <label>Name</label>
   <input type="text" name="name"/>
   <label>Email</label>
