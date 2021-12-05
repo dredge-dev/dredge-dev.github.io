@@ -1,7 +1,15 @@
 title: Dredge
 description: "Dredge: Toil less, Code more"
 url: "https://dredge.dev"
+
 remote_theme: "mmistakes/minimal-mistakes@4.24.0"
 plugins:
  - jekyll-include-cache
+
 markdown: kramdown
+
+footer:
+  links:
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/dredge-dev"
