@@ -1,0 +1,7 @@
+main:
+ - title: "Project"
+   url: /#exploring
+ - title: "Open source"
+   url: /#open-source
+ - title: "Get involved"
+   url: /#get-involved

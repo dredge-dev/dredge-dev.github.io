@@ -1,37 +1,70 @@
-## Welcome to GitHub Pages
+---
+layout: splash
+permalink: /
+hidden: true
+header:
+  overlay_color: "#5e616c"
+  overlay_image: /assets/images/back.jpg
+  actions:
+    - label: "Learn more"
+      url: "#how-it-works"
+title: Toil less, Code more.
+excerpt: >
+  Dredge automates software development workflows<br /> <small>from design docs over local setup to resolving production incidents.</small>
+feature_row:
+  - title: "Wrap"
+    excerpt: >
+      Warp existing tools, don't replace them. The goal of the project is to have a common interface for developer workflows. The implementations are language, framework or tool specific.    
+  - title: "Abstract"
+    excerpt: >
+      Make contributing to your project easy by implementing the default developer workflows. New team members or contributors get an easy on-ramp. Less time is spent on figuring out how to get started.
+  - title: "Extend"
+    excerpt: >
+      Create workflows for toilsome tasks, & share them with the team. Use this to automate incident runbooks and to streamline day-to-day operations.
+---
 
-You can use the [editor on GitHub](https://github.com/dredge-dev/dredge-dev.github.io/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
+![screenshot](/assets/images/screenshot.webp){: .browser}
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+# How it works
 
-### Markdown
+## 01. Workflows
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Developer workflows are abstracted into standardised commands. The doc-search workflow searches the project docs, wherever they are hosted. The build workflow invokes your build tools to build the project. You get the picture!
 
-```markdown
-Syntax highlighted code block
+## 02. Sharing
 
-# Header 1
-## Header 2
-### Header 3
+Don't reinvent the wheel, share and import common workflows. For example import workflows for a project using SpringBoot, Gradle, GitHub, Snyk, Jira & Slack.
 
-- Bulleted
-- List
+## 03. Profit
 
-1. Numbered
-2. List
+Run the development workflows from your IDE. No need to remember the particular quirks for each project, these are now abstracted away into the workflows.
 
-**Bold** and _Italic_ and `Code` text
+<div class="page__hero--overlay box">
+<h1 id="exploring">Exploring</h1>
+<div>
+This project is in the exploration phase. We are looking for software developers who want to share their opinions and get involved in the project. It's early days for this project, make an impact!
+</div>
+</div>
 
-[Link](url) and ![Image](src)
-```
+# Open source
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+Dredge is an open source project that is just getting started. Our guiding principles:
 
-### Jekyll Themes
+{% include feature_row %}
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/dredge-dev/dredge-dev.github.io/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+# Get involved
 
-### Support or Contact
+Do you want to get a demo, try it out yourself or contribute? Let use know!
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+<form id="involved" action="">
+  <label>Name</label>
+  <input type="text" name="name"/>
+  <label>Email</label>
+  <input type="text" name="email"/>
+  <input type="submit" value="Get involved" class="btn btn--light-outline btn--large" style="margin-top: 20px; width: 100%">
+</form>
+
+# Examples
+
+| DESIGN DOCS | LOCAL ENV | PRs | TICKETS | INCIDENTS |
+|Reference and search the design docs, wherever they live.|Setup the local environment to get the project running.|Create a PR following the project standards.|Open, close and work on tickets. Search for related tickets.|Find the runbooks. Remediate well-known issues.|
