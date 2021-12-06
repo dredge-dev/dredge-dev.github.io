@@ -13,3 +13,8 @@ footer:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/dredge-dev"
+
+analytics:
+  provider: "google-gtag"
+  google:
+    tracking_id: "G-2F3FZ74TMQ"
