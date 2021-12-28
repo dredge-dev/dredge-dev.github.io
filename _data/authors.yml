@@ -1,0 +1,8 @@
+Fred:
+  name        : "Frederick Ryckbosch"
+  bio         : "Dredging for fun"
+  avatar      : "/assets/images/fred.jpg"
+  links:
+    - label: "Website"
+      icon: "fas fa-fw fa-link"
+      url: "https://dredge.dev"

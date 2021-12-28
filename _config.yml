@@ -18,3 +18,13 @@ analytics:
   provider: "google-gtag"
   google:
     tracking_id: "G-2F3FZ74TMQ"
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
+      author_profile: true
+      share: true
+      related: true
