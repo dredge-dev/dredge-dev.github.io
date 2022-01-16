@@ -1,0 +1,32 @@
+env:
+  variables:
+    JEKYLL_VERSION: latest
+  runtimes:
+  - name: jekyll-container
+    type: container
+    image: jekyll/jekyll:${JEKYLL_VERSION}
+    home: /srv/jekyll
+    ports:
+      - 4000:4000
+workflows:
+- name: run
+  description: Run Jekyll locally on port 4000
+  steps:
+  - shell:
+      cmd: /bin/bash -c 'bundle install && jekyll serve --watch --force_polling --verbose'
+      runtime: jekyll-container
+- name: new-post
+  description: Create a new blog post
+  inputs:
+    title: Title for the blog post
+  steps:
+  - template:
+      input: |
+        ---
+        title: {{ .title }}
+        author:
+        tags:
+        ---
+        
+        Start here.
+      dest: '_posts/{{ date "2006-01-02" }}-{{ replace .title " " "-" }}.md'
