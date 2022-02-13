@@ -1,9 +1,17 @@
 main:
  - title: "Project"
-   url: /#exploring
- - title: "Open source"
-   url: /#open-source
+   url: /
+ - title: "Docs"
+   url: /docs/quick-start-guide/
  - title: "Blog"
    url: /blog
  - title: "Get involved"
    url: /#get-involved
+
+docs:
+  - title: Docs
+    children:
+      - title: "Quick-Start Guide"
+        url: /docs/quick-start-guide/
+      - title: "Dredgefile Format"
+        url: /docs/dredgefile/

@@ -8,6 +8,11 @@ plugins:
 
 markdown: kramdown
 
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:path/
+
 footer:
   links:
     - label: "GitHub"
@@ -28,3 +33,15 @@ defaults:
       author_profile: true
       share: true
       related: true
+  - scope:
+      path: ""
+      type: docs
+    values:
+      layout: single
+      read_time: false
+      author_profile: false
+      share: false
+      comments: false
+      sidebar:
+        nav: "docs"
+
