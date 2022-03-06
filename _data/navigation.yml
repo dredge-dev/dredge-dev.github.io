@@ -13,5 +13,7 @@ docs:
     children:
       - title: "Quick-Start Guide"
         url: /docs/quick-start-guide/
-      - title: "Dredgefile Format"
+      - title: "drg command"
+        url: /docs/drg/
+      - title: "Dredgefile format"
         url: /docs/dredgefile/

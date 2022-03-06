@@ -1,5 +1,5 @@
 ---
-title: "Dredgefile Format"
+title: "Dredgefile format"
 permalink: /docs/dredgefile/
 excerpt: "Format and features of the Dredgefile"
 ---
@@ -10,34 +10,85 @@ A Dredgefile is a YAML file describing workflows that consist of steps. Workflow
 
 A workflow has a name, description and a list of steps. Workflows are listed when the `drg` command is executed without arguments.
 
-Fields
+A simple example of a workflow:
+
+```yaml
+workflows:
+  - name: hello
+    description: Say hello
+    steps:
+      - shell:
+          cmd: echo hello
+```
+
+Output of the execution:
+
+```
+$ drg hello
+hello
+```
+
+Workflow fields:
  - `name: string` - Name of the workflow
  - `description: string` - Description of the workflow
- - `inputs: dict` - Map with the name and description of the input
+ - `inputs: map` - Map with the name and description of the input
  - `steps: []Step` - Steps in the workflow
+ - `import: Import` - Import a workflow from Dredgefile, cannot be combined with steps or inputs
 
 Step types
  - `shell`: execute a command in the shell
  - `template`: template a string and write to a file
  - `browser`: open a URL in a browser window
+ - `edit_dredgefile`: add workflows, buckets or variables to the calling Dredgefile
 
 ### Inputs
 
-Inputs can be provided as environment variables. If the environment variable is not set, `drg` will prompt for the input.
+Asks the user for inputs that can be used in the workflow. Inputs is a map: the name of the input is the map key, the description of the input is the map value.
+
+```yaml
+workflows:
+- name: echo
+  description: Echo the input
+  inputs:
+    value: The value to echo
+  steps:
+  - shell:
+      cmd: echo {{ .value }}
+```
+
+Inputs can be provided as environment variables. If the environment variable is not set, `drg` will prompt for the input:
+
+```
+$ value=hello drg echo
+hello
+```
+
+In case the value environment variable is not set:
+
+```
+$ drg echo
+The value to echo [value]: hello
+hello
+```
 
 ### Shell Step
 
-Execute a command in the shell.
+Execute a command in the shell. Note: the hello and echo examples above used the shell step.
 
-Fields
+Fields:
  - `cmd: string` - The command to execute
- - `runtime: string` - Reference to the runtime to execute the command (see [Env > Runtimes](#runtimes))
+ - `runtime: string` - Reference to the runtime to execute the command (see [Runtimes](#runtimes))
 
 If no runtime is provided, defaults to executing in the current shell.
 
 ### Template Step
 
-Template a string and write to a file. Uses [Go templating](https://pkg.go.dev/text/template), variables can be templated like this: `{{ .title }}`.
+Template a string and write to a file. Uses [Go templating](https://pkg.go.dev/text/template), variables can be templated like this: {% raw %}`{{ .title }}`{% endraw %}.
+
+Fields:
+ - `input: string` - String to template
+ - `source: Source` - Read the string to template from [source](#importing-workflows), cannot be combined with input
+ - `dest: string` - Path of the file to write
 
 {% raw %}
 ```yaml
@@ -60,7 +111,7 @@ workflows:
 ```
 {% endraw %}
 
-Functions
+Functions:
  - `date "<format>"`: format the current date (see [this blog](https://golang.cafe/blog/golang-time-format-example.html#:~:text=Golang%20Time%20Format%20YYYY%2DMM%2DDD) for more info)
  - `replace <s> <old> <new>`: replace `<old>` by `new` in `<s>`
 
@@ -73,24 +124,151 @@ workflows:
 - name: open
   description: Open the issues ui
   steps:
-  - browser: https://github.com/dredge-dev/dredge/issues
+  - browser:
+      url: https://github.com/dredge-dev/dredge/issues
 ```
 
-## Env
+### Edit Dredgefile step
 
-The environment defines variables and runtimes that can be used in the workflows.
+Use the `edit_dredgefile` step to add workflows, buckets or variables to the calling Dredgefile. It should be used for Dredgefiles that help developers create or extend their Dredgefile and can only be used when called through an [exec command](/docs/drg/#exec-command).
 
-### Variables
+edit_dredgefile fields:
+ - `add_variables: map` - [Variables](#variables) to add to the Dredgefile
+ - `add_workflows: []Workflow` - [Workflows](#workflows) to add to the Dredgefile
+ - `add_buckets: []Bucket` - [Buckets](#buckets) to add to the Dredgefile
 
-Variables to be reuse in the workflows, for example the version of the tools used.
+For example, an `init` workflow to setup a Python project in `./python.Dredgefile`:
 
 ```yaml
-env:
-  variables:
-    GO_VERSION: 1.17
+workflows:
+  - name: init
+    description: Init a new python project
+    steps:
+      - template:
+          input: print("hello")
+          dest: main.py
+      - edit_dredgefile:
+          add_workflows:
+            - name: run
+              description: Run the script
+              steps:
+                - shell:
+                    cmd: python3 main.py
 ```
 
-### Runtimes
+To execute the workflow, use the [exec](/docs/drg/#exec-command) or [init](/docs/drg/#init-command) command:
+
+```
+$ drg init ./python.Dredgefile
+```
+
+This adds the `run` workflow the the Dredgefile in the current directory:
+
+```yaml
+workflows:
+  - name: run
+    description: Run the script
+    steps:
+      - shell:
+          cmd: python3 main.py
+```
+
+Which can be executed using:
+
+```
+$ drg run
+```
+
+### Importing workflows
+
+Workflows can be imported from other Dredgefiles by supplying the import field. The import object has 3 fields:
+ * `source: Source` - Source of the Dredgefile to import from
+ * `bucket: string` - (optional) Name of bucket to import from
+ * `workflow: string` - Name of the workflow to import
+
+Supported sources:
+ * Relative paths: `./<relative_path>` eg. `./utils/Dredgefile`
+ * Git repo: `<clone_url>:<path_to_dredgefile>` eg. `https://github.com/dredge-dev/dredge-repo.git:python/Dredgefile`
+ * [Default dredge repo](https://github.com/dredge-dev/dredge-repo): `<path_to_dredgefile>` eg. `python/Dredgefile`
+
+If the source is a directory, drg will look for a file called `Dredgefile` in the directory. The examples above can be shortened to:
+ * `./utils`
+ * `https://github.com/dredge-dev/dredge-repo.git:python`
+ * `python`
+
+Example to import the `create` workflow from the `issue` bucket from the `github/issues` Dredgefile in the public Dredge repo:
+
+```yaml
+workflows:
+  - name: create-issue
+    import:
+      source: github/issues
+      bucket: issue
+      workflow: create
+```
+
+## Buckets
+
+Workflows can be grouped into buckets. The `drg` command without arguments will show the buckets and the top level workflows.
+
+```yaml
+buckets:
+- name: issue
+  description: List, create, update issues for this project
+  workflows:
+  - name: open
+    description: Open the issues ui
+    steps:
+    - browser: https://github.com/dredge-dev/dredge/issues
+```
+
+Bucket fields:
+ - `name: string` - Name of the bucket
+ - `description: string` - Description of the bucket
+ - `workflows: []Workload` - Workflows in the bucket
+ - `import: Import` - Import a bucket from Dredgefile, cannot be combined with workflows
+
+The workflows inside a bucket can be found by executing `drg <bucket>`. For the example above:
+
+```
+$ drg issue
+List, create, update issues for this project
+
+Usage:
+  drg issue [command]
+
+Available Commands:
+  open        Open the issues ui
+```
+
+### Importing buckets
+
+Buckets can be imported from other Dredgefiles by supplying the import field. The import object has 2 fields:
+ * `source: Source` - Source of the Dredgefile to import from
+ * `bucket: string` - Name of bucket to import
+
+For the supported sources see [Importing workflows](#importing-workflows).
+
+Example to import the `issue` bucket from the `github/issues` Dredgefile in the public Dredge repo: 
+
+```yaml
+buckets:
+  - name: issue
+    import:
+      source: github/issues
+      bucket: issue
+```
+
+## Variables
+
+Variables to use in the workflows, for example the version of the tools.
+
+```yaml
+variables:
+  GO_VERSION: "1.17"
+```
+
+## Runtimes
 
 Runtime to execute commands. Dredge can execute commands in the current shell (native runtime) or a Docker container.
 
@@ -110,18 +288,17 @@ Fields for type `container`
 The example belows defines a container to run Jekyll and a workflow to run the website in the container.
 
 ```yaml
-env:
-  variables:
-    JEKYLL_VERSION: latest
-  runtimes:
-  - name: jekyll-container
-    type: container
-    image: jekyll/jekyll:${JEKYLL_VERSION}
-    home: /srv/jekyll
-    cache:
-    - /usr/gem/gems/
-    ports:
-      - 4000:4000
+variables:
+  JEKYLL_VERSION: latest
+runtimes:
+- name: jekyll-container
+  type: container
+  image: jekyll/jekyll:{{ .JEKYLL_VERSION }}
+  home: /srv/jekyll
+  cache:
+  - /usr/gem/gems/
+  ports:
+    - 4000:4000
 workflows:
 - name: run
   description: Run Jekyll locally on port 4000
@@ -129,34 +306,6 @@ workflows:
   - shell:
       cmd: /bin/bash -c 'bundle install && jekyll serve --watch --force_polling --verbose'
       runtime: jekyll-container
-```
-
-## Buckets
-
-Workflows can be grouped into buckets. The `drg` command without arguments will show the buckets and the top level workflows.
-
-```yaml
-buckets:
-- name: issue
-  description: List, create, update issues for this project
-  workflows:
-  - name: open
-    description: Open the issues ui
-    steps:
-    - browser: https://github.com/dredge-dev/dredge/issues
-```
-
-The workflows inside a bucket can be found by executing `drg <bucket>`. For the example above:
-
-```
-$ drg issue
-List, create, update issues for this project
-
-Usage:
-  drg issue [command]
-
-Available Commands:
-  open        Open the issues ui
 ```
 
 ## Example Dredgefiles

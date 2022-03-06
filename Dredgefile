@@ -1,13 +1,12 @@
-env:
-  variables:
-    JEKYLL_VERSION: latest
-  runtimes:
-  - name: jekyll-container
-    type: container
-    image: jekyll/jekyll:${JEKYLL_VERSION}
-    home: /srv/jekyll
-    ports:
-      - 4000:4000
+variables:
+  JEKYLL_VERSION: latest
+runtimes:
+- name: jekyll-container
+  type: container
+  image: jekyll/jekyll:{{ .JEKYLL_VERSION }}
+  home: /srv/jekyll
+  ports:
+    - 4000:4000
 workflows:
 - name: run
   description: Run Jekyll locally on port 4000

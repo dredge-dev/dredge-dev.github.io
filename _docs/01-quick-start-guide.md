@@ -24,12 +24,6 @@ chmod +x drg
 mv drg /usr/local/bin/
 ```
 
-## Windows
-
-```
-Invoke-WebRequest -Uri https://github.com/dredge-dev/dredge/releases/latest/download/drg-windows-amd64 -OutFile drg
-```
-
 # Run Dredge
 
 Create a `Dredgefile` with a basic workflow.
