@@ -31,7 +31,7 @@ hello
 Workflow fields:
  - `name: string` - Name of the workflow
  - `description: string` - Description of the workflow
- - `inputs: map` - Map with the name and description of the input
+ - `inputs: []Input` - Inputs for the workflow
  - `steps: []Step` - Steps in the workflow
  - `import: Import` - Import a workflow from Dredgefile, cannot be combined with steps or inputs
 
@@ -43,18 +43,44 @@ Step types
 
 ### Inputs
 
-Asks the user for inputs that can be used in the workflow. Inputs is a map: the name of the input is the map key, the description of the input is the map value.
+Asks the user for inputs that can be used in the workflow. The inputs can be free-form text input:
 
 ```yaml
 workflows:
 - name: echo
   description: Echo the input
   inputs:
-    value: The value to echo
+  - name: value
+    description: The value to echo
   steps:
   - shell:
       cmd: echo {{ .value }}
 ```
+
+Or selecting a value for a list:
+
+```yaml
+workflows:
+- name: echo
+  description: Echo the input
+  inputs:
+  - name: value
+    description: The value to echo
+    type: select
+    values:
+    - hello world
+    - bye world
+  steps:
+  - shell:
+      cmd: echo {{ .value }}
+```
+
+Input fields:
+ - `name: string` - Name of the variable to set
+ - `description: string` - Description of the input
+ - `type: string` - Optional. Possible types are `select` and `text`, `text` by default
+ - `values: []string` - Values of a `select` input, not applicable for `text` inputs
+ - `default_value: string` - Optional. Default value for a text input
 
 Inputs can be provided as environment variables. If the environment variable is not set, `drg` will prompt for the input:
 
@@ -96,7 +122,8 @@ workflows:
 - name: new-post
   description: Create a new blog post
   inputs:
-    title: Title for the blog post
+  - name: title
+    description: Title for the blog post
   steps:
   - template:
       input: |

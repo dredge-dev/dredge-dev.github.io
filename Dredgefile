@@ -14,10 +14,16 @@ workflows:
   - shell:
       cmd: /bin/bash -c 'bundle install && jekyll serve --watch --force_polling --verbose'
       runtime: jekyll-container
+- name: open
+  description: Open browser with the local version
+  steps:
+  - browser:
+      url: http://localhost:4000/
 - name: new-post
   description: Create a new blog post
   inputs:
-    title: Title for the blog post
+    - name: title
+      description: Title for the blog post
   steps:
   - template:
       input: |
