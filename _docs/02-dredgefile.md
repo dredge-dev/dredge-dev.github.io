@@ -78,9 +78,9 @@ workflows:
 Input fields:
  - `name: string` - Name of the variable to set
  - `description: string` - Description of the input
- - `type: string` - Optional. Possible types are `select` and `text`, `text` by default
+ - `type: string` - *Optional.* Possible types are `select` and `text`, `text` by default
  - `values: []string` - Values of a `select` input, not applicable for `text` inputs
- - `default_value: string` - Optional. Default value for a text input
+ - `default_value: string` - *Optional.* Default value for a text input
 
 Inputs can be provided as environment variables. If the environment variable is not set, `drg` will prompt for the input:
 
@@ -115,6 +115,7 @@ Fields:
  - `input: string` - String to template
  - `source: Source` - Read the string to template from [source](#importing-workflows), cannot be combined with input
  - `dest: string` - Path of the file to write
+ - `insert: Insert` - *Optional.* Don't overwrite the `dest` file but insert the generated text into the file. The `Insert` fields defined where the text should be inserted.
 
 {% raw %}
 ```yaml
@@ -141,6 +142,48 @@ workflows:
 Functions:
  - `date "<format>"`: format the current date (see [this blog](https://golang.cafe/blog/golang-time-format-example.html#:~:text=Golang%20Time%20Format%20YYYY%2DMM%2DDD) for more info)
  - `replace <s> <old> <new>`: replace `<old>` by `new` in `<s>`
+ - `join <s1> <s2> <separator>`: join the 2 strings with the provided separator
+
+Insert describes how to insert the templated text into an existing file.
+ - `placement: [begin|end`] - Insert at the begin or end of the file / section.
+ - `section: string` - *Optional.* If not provided the text is inserted at the begin or end of the file. Section is only supported for Go and takes either `import` or a `func` definition.
+
+The example below adds an http service to a Go program by performing 3 steps:
+
+ 1. edits the imports
+ 2. adds setting up the http server in the main function
+ 3. adds the handler function.
+
+```yaml
+workflows:
+  - name: add-http-server
+    description: Add a http server to the code
+    steps:
+      - template:
+          input: |
+            "fmt"
+            "net/http"
+          dest: main.go
+          insert:
+            section: import
+      - template:
+          input: |
+            http.HandleFunc("/", handleRoot)
+            http.ListenAndServe(":8080", nil)
+          dest: main.go
+          insert:
+            section: func main()
+            placement: end
+      - template:
+          input: |
+            func handleRoot(w http.ResponseWriter, req *http.Request) {
+                 fmt.Fprintf(w, "hello\n")
+            }
+          dest: main.go
+          insert:
+            placement: end
+```
+
 
 ### Browser Step
 
@@ -210,7 +253,7 @@ $ drg run
 
 Workflows can be imported from other Dredgefiles by supplying the import field. The import object has 3 fields:
  * `source: Source` - Source of the Dredgefile to import from
- * `bucket: string` - (optional) Name of bucket to import from
+ * `bucket: string` - *Optional.* Name of bucket to import from
  * `workflow: string` - Name of the workflow to import
 
 Supported sources:
@@ -308,9 +351,9 @@ Fields for type `container`
  - `name: string` - Name of the runtime to be reference in the workflows
  - `type: string` - 'container' in this case
  - `image: string` - Docker image
- - `home: string` - Optional directory to mount project (default: `/home`)
+ - `home: string` - *Optional.* Directory to mount project (default: `/home`)
  - `cache: []string` - List of directories in the container to cache on the host
- - `ports: []string` - List of [port mappings](https://docs.docker.com/config/containers/container-networking/#published-ports) for the container. `8080:80` maps TCP port 80 in the container to port 8080 on the Docker host.
+ - `ports: []string` - List of [port mappings](https://docs.docker.com/config/containers/container-networking/#published-ports) for the container. `8080:80` maps TCP port 80 in the container to port 8080 on the host. `8080` maps port 8080 in the container to port 8080 on the host. One port entry can contain multiple port mappings delimited by a comma, eg. `1234,8080` maps ports 1234 and 8080 in the container to ports 1234 and 8080 on the host.
 
 The example belows defines a container to run Jekyll and a workflow to run the website in the container.
 
