@@ -40,6 +40,7 @@ Step types
  - `template`: template a string and write to a file
  - `browser`: open a URL in a browser window
  - `edit_dredgefile`: add workflows, buckets or variables to the calling Dredgefile
+ - `if`: conditionally execute a list of steps
 
 ### Inputs
 
@@ -103,9 +104,9 @@ Execute a command in the shell. Note: the hello and echo examples above used the
 
 Fields:
  - `cmd: string` - The command to execute
- - `runtime: string` - Reference to the runtime to execute the command (see [Runtimes](#runtimes))
-
-If no runtime is provided, defaults to executing in the current shell.
+ - `runtime: string` - Reference to the runtime to execute the command (see [Runtimes](#runtimes)). If no runtime is provided, defaults to executing in the current shell.
+ - `stdout: string` - Name of the variable to capture the stdout of the command in. Leaving this field empty prints the output of the command to Dredge stdout
+ - `stderr: string` - Name of the variable to capture the stderr of the command in. Leaving this field empty prints stderr of the command to Dredge stderr
 
 ### Template Step
 
@@ -143,9 +144,19 @@ Functions:
  - `date "<format>"`: format the current date (see [this blog](https://golang.cafe/blog/golang-time-format-example.html#:~:text=Golang%20Time%20Format%20YYYY%2DMM%2DDD) for more info)
  - `replace <s> <old> <new>`: replace `<old>` by `new` in `<s>`
  - `join <s1> <s2> <separator>`: join the 2 strings with the provided separator
+ - `trimSpace <s>`: trims whitespace from the beginning and ending of `<s>`
+ - `isTrue <s>`: returns true if `<s>` is `true`, `t`, `yes` or `1`
+ - `isFalse <s>`: returns true if `<s>` is `false`, `f`, `no` or `0`
+
+`isTrue` and `isFalse` can be used for conditional templating:
+{% raw %}
+```
+{{if isFalse .ISSUES}}--disable-issues{{end}}
+```
+{% endraw %}
 
 Insert describes how to insert the templated text into an existing file.
- - `placement: [begin|end`] - Insert at the begin or end of the file / section.
+ - `placement: [begin|end|unique]` - Insert at the begin or end of the file / section. Unqiue adds the line at the end of the file if it is not yet present in the file.
  - `section: string` - *Optional.* If not provided the text is inserted at the begin or end of the file. Section is only supported for Go and takes either `import` or a `func` definition.
 
 The example below adds an http service to a Go program by performing 3 steps:
@@ -248,6 +259,40 @@ Which can be executed using:
 ```
 $ drg run
 ```
+
+### If step
+
+Execute a list of steps conditionally.
+
+if fields:
+ - `cond: string` - Templated string (eg. `{{ .EXISTS }}`). Execute the list of steps if `cond` is true-ish (`true`, `t`, `yes`, `1`)
+ - `steps: []Step` - The list of steps to execute
+
+The example below asks the user whether they want to use GitHub issues for issue tracking. The `issue` bucket from `github/issues` is imported into the Dredgefile if they selected `true`.
+
+{% raw %}
+```yaml
+workflows:
+- name: init
+  inputs:
+  - name: ISSUES
+    description: Use GitHub issues for issue tracking
+    type: select
+    values:
+    - "true"
+    - "false"
+  steps:
+  - if:
+      cond: "{{ .ISSUES }}"
+      steps:
+      - edit_dredgefile:
+          add_buckets:
+          - name: issue
+            import:
+              source: github/issues
+              bucket: issue
+```
+{% endraw %}
 
 ### Importing workflows
 
@@ -352,7 +397,8 @@ Fields for type `container`
  - `type: string` - 'container' in this case
  - `image: string` - Docker image
  - `home: string` - *Optional.* Directory to mount project (default: `/home`)
- - `cache: []string` - List of directories in the container to cache on the host
+ - `cache: []string` - List of directories in the container to cache on the host for this project
+ - `global_cache: []string` - List of directories in the container to cache on the host across all projects
  - `ports: []string` - List of [port mappings](https://docs.docker.com/config/containers/container-networking/#published-ports) for the container. `8080:80` maps TCP port 80 in the container to port 8080 on the host. `8080` maps port 8080 in the container to port 8080 on the host. One port entry can contain multiple port mappings delimited by a comma, eg. `1234,8080` maps ports 1234 and 8080 in the container to ports 1234 and 8080 on the host.
 
 The example belows defines a container to run Jekyll and a workflow to run the website in the container.
