@@ -1,12 +1,10 @@
 main:
- - title: "Project"
-   url: /
  - title: "Docs"
    url: /docs/quick-start-guide/
  - title: "Blog"
    url: /blog
- - title: "Get involved"
-   url: /#get-involved
+ - title: "Github"
+   url: "https://github.com/dredge-dev/dredge"
 
 docs:
   - title: Docs

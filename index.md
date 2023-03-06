@@ -10,7 +10,7 @@ header:
       url: "#how-it-works"
 title: Toil less, Code more.
 excerpt: >
-  Dredge automates software development workflows<br /> <small>from design docs over local setup to resolving production incidents.</small>
+  Dredge automates software development workflows
 feature_row:
   - title: "Wrap"
     excerpt: >
