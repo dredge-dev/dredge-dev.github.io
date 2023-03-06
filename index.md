@@ -6,8 +6,8 @@ header:
   overlay_color: "#5e616c"
   overlay_image: /assets/images/back.jpg
   actions:
-    - label: "Learn more"
-      url: "#how-it-works"
+    - label: "Get started"
+      url: "#get-started"
 title: Dredge automates DevOps workflows
 excerpt: >
   Dredge is a open-source tool that seamlessly integrates with your DevOps tools to streamline and standardize your development and operations workflows, helping your team to work more efficiently and effectively.
@@ -25,7 +25,13 @@ feature_row:
 
 ![screenshot](https://asciinema.org/a/564048.svg){: .browser}
 
-# How it works
+# Get started
+
+```
+curl https://dredge.dev/install.sh | bash    # install Dredge
+drg init                                     # initialize the project
+drg add release                              # add your first resource
+```
 
 ## 01. Workflows
 
@@ -38,13 +44,6 @@ Don't reinvent the wheel, share and import common workflows. For example import 
 ## 03. Profit
 
 Run the development workflows from your IDE. No need to remember the particular quirks for each project, these are now abstracted away into the workflows.
-
-<div class="page__hero--overlay box">
-<h1 id="exploring">Exploring</h1>
-<div>
-This project is in the exploration phase. We are looking for software developers who want to share their opinions and get involved in the project. It's early days for this project, make an impact!
-</div>
-</div>
 
 # Open source
 
