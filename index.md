@@ -8,9 +8,9 @@ header:
   actions:
     - label: "Learn more"
       url: "#how-it-works"
-title: Toil less, Code more.
+title: Dredge automates DevOps workflows
 excerpt: >
-  Dredge automates software development workflows
+  Dredge is a open-source tool that seamlessly integrates with your DevOps tools to streamline and standardize your development and operations workflows, helping your team to work more efficiently and effectively.
 feature_row:
   - title: "Wrap"
     excerpt: >
@@ -23,7 +23,7 @@ feature_row:
       Create workflows for toilsome tasks, & share them with the team. Use this to automate incident runbooks and to streamline day-to-day operations.
 ---
 
-![screenshot](/assets/images/screenshot.webp){: .browser}
+![screenshot](https://asciinema.org/a/564048.svg){: .browser}
 
 # How it works
 
