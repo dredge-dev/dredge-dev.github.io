@@ -24,7 +24,7 @@ feature_row:
       Create workflows for toilsome tasks, & share them with the team. Use this to automate incident runbooks and to streamline day-to-day operations.
 ---
 
-<script async id="asciicast-564048" src="https://asciinema.org/a/564048.js"></script>
+<script async id="asciicast-564048" src="https://asciinema.org/a/564048.js" data-autoplay="true"></script>
 
 # Get started
 
