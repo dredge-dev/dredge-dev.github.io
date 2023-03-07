@@ -24,7 +24,7 @@ feature_row:
       Create workflows for toilsome tasks, & share them with the team. Use this to automate incident runbooks and to streamline day-to-day operations.
 ---
 
-<script async id="asciicast-564048" src="https://asciinema.org/a/564048.js"></script>{: .browser}
+<script async id="asciicast-564048" src="https://asciinema.org/a/564048.js"></script>
 
 # Get started
 
@@ -50,7 +50,7 @@ Discover and create documentation in a uniform way
 
 ## Feature flags
 Manage features flags across environments
-`drg get featureflag | drg create featureflag | drg rollout featureflag`
+`drg get featureflag | drg create featureflag | drg update featureflag`
 
 ## Tickets
 Discover and create tickets in a uniform way
