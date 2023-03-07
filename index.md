@@ -8,7 +8,7 @@ header:
   actions:
     - label: "Get started"
       url: "#get-started"
-title: Dredge automates DevOps workflows
+title: Automates DevOps workflows
 excerpt: >
   Dredge is a open-source tool that seamlessly integrates with your DevOps tools to streamline and standardize your development and operations workflows, helping your team to work more efficiently and effectively.
 feature_row:
