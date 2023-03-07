@@ -24,7 +24,7 @@ feature_row:
       Create workflows for toilsome tasks, & share them with the team. Use this to automate incident runbooks and to streamline day-to-day operations.
 ---
 
-[![asciicast](https://asciinema.org/a/564048.svg)](https://asciinema.org/a/564048){: .browser}
+<script async id="asciicast-564048" src="https://asciinema.org/a/564048.js"></script>{: .browser}
 
 # Get started
 
@@ -66,12 +66,7 @@ Add your own resources and workflows
 
 # Extending Dredge
 
-The resources available in Dredge can be extended by users by creating a resource definition. The resource definition contains:
- * name of the resource
- * field definitions
- * command definitions
-
-The command definitions are abstract and need to be implemented by the resource provider. Workflows can be added to the Dredgefile in order to automate tasks across multiple resources.
+The resources available in Dredge can be extended by users by creating a resource definition. The resource definition contains the name of the resource, the field definitions and the command definitions. The command definitions are abstract and need to be implemented by the resource provider. Workflows can be added to the Dredgefile in order to automate tasks across multiple resources. See [the docs](/docs) for more information.
 
 Dredge uses the following principles:
 
