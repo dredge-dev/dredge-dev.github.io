@@ -5,7 +5,6 @@ url: "https://dredge.dev"
 remote_theme: "mmistakes/minimal-mistakes@4.24.0"
 plugins:
  - jekyll-include-cache
- - jekyll-redirect-from
 
 markdown: kramdown
 
