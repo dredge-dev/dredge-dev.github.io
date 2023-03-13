@@ -31,7 +31,6 @@ feature_row:
 ```
 curl https://dredge.dev/install.sh | bash    # install Dredge
 drg init                                     # initialize the project
-drg add release                              # add your first resource
 ```
 
 # Use cases
