@@ -35,33 +35,31 @@ drg init                                     # initialize the project
 
 # Use cases
 
-## Releases
-Automate your release workflows
-`drg get release | drg create release`
+### Automate your release workflows
+ * drg get release
+ * drg create release
 
-## Deployments
-Manage deployments across environments
-`drg get deploy`
+### Manage deployments across environments
+ * drg get deploy
+ * drg update deploy
 
-## Documentation
-Discover and create documentation in a uniform way
-`drg get doc | drg search doc | drg create doc`
+### Discover and create documentation in a uniform way
+ * drg search doc
 
-## Feature flags
-Manage features flags across environments
-`drg get featureflag | drg create featureflag | drg update featureflag`
+### Manage features flags across environments
+ * drg get featureflag
+ * drg create featureflag
+ * drg update featureflag
 
-## Tickets
-Discover and create tickets in a uniform way
-`drg get ticket | drg search ticket | drg create ticket`
+### Discover and create tickets in a uniform way
+ * drg search ticket
+ * drg create ticket
 
-## Security scans
-Make security part of your day-to-day workflows
-`drg get securityscan`
+### Make security part of your day-to-day workflows
+ * drg get securityscan
 
-## Many more...
-Add your own resources and workflows
-
+### Add your own workflows
+ * Build workflows on top of resources
 
 # Extending Dredge
 
