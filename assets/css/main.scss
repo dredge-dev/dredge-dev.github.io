@@ -7,11 +7,26 @@
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}";
 @import "minimal-mistakes";
 
-.browser {
+.page__hero--overlay #page-title {
+  text-shadow: 2px 2px 4px #000000 !important;
+}
+
+.page__hero--overlay .page__lead {
+  text-shadow: 2px 2px 4px #000000 !important;
+}
+
+.page__hero--overlay {
+  margin-bottom: -80px;
+}
+
+#main {
+  max-width: 80%;
+}
+
+.asciicast {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  margin-top: -80px;
   border: 15px solid #ccc;
   border-radius: 10px;
 }

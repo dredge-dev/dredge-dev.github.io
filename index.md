@@ -6,65 +6,73 @@ header:
   overlay_color: "#5e616c"
   overlay_image: /assets/images/back.jpg
   actions:
-    - label: "Learn more"
-      url: "#how-it-works"
-title: Toil less, Code more.
+    - label: "Get started"
+      url: "#get-started"
+title: Automates DevOps workflows
 excerpt: >
-  Dredge automates software development workflows<br /> <small>from design docs over local setup to resolving production incidents.</small>
+  Dredge is a open-source tool that seamlessly integrates with your DevOps tools to streamline and standardize your development and operations workflows, helping your team to work more efficiently and effectively.
 feature_row:
-  - title: "Wrap"
-    excerpt: >
-      Warp existing tools, don't replace them. The goal of the project is to have a common interface for developer workflows. The implementations are language, framework or tool specific.    
   - title: "Abstract"
     excerpt: >
-      Make contributing to your project easy by implementing the default developer workflows. New team members or contributors get an easy on-ramp. Less time is spent on figuring out how to get started.
+      Makes contributing to your code easy by abstracting tools into resources. New team members or contributors get an easy on-ramp. Less time is spent on figuring out how to get started.
+  - title: "Wrap"
+    excerpt: >
+      Wraps existing tools, doesn't replace them. The goal of the project is to have a common interface for workflows. The implementations are tool specific.
+
   - title: "Extend"
     excerpt: >
       Create workflows for toilsome tasks, & share them with the team. Use this to automate incident runbooks and to streamline day-to-day operations.
 ---
 
-![screenshot](/assets/images/screenshot.webp){: .browser}
+<script async id="asciicast-564048" src="https://asciinema.org/a/564048.js" data-autoplay="true"></script>
 
-# How it works
+# Get started
 
-## 01. Workflows
+```
+curl https://dredge.dev/install.sh | bash    # install Dredge
+drg init                                     # initialize the project
+```
 
-Developer workflows are abstracted into standardised commands. The doc-search workflow searches the project docs, wherever they are hosted. The build workflow invokes your build tools to build the project. You get the picture!
+# Use cases
 
-## 02. Sharing
+### Automate your release workflows
+ * drg get release
+ * drg create release
 
-Don't reinvent the wheel, share and import common workflows. For example import workflows for a project using SpringBoot, Gradle, GitHub, Snyk, Jira & Slack.
+### Manage deployments across environments
+ * drg get deploy
+ * drg update deploy
 
-## 03. Profit
+### Discover and create documentation in a uniform way
+ * drg search doc
 
-Run the development workflows from your IDE. No need to remember the particular quirks for each project, these are now abstracted away into the workflows.
+### Manage features flags across environments
+ * drg get featureflag
+ * drg create featureflag
+ * drg update featureflag
 
-<div class="page__hero--overlay box">
-<h1 id="exploring">Exploring</h1>
-<div>
-This project is in the exploration phase. We are looking for software developers who want to share their opinions and get involved in the project. It's early days for this project, make an impact!
-</div>
-</div>
+### Discover and create tickets in a uniform way
+ * drg search ticket
+ * drg create ticket
 
-# Open source
+### Make security part of your day-to-day workflows
+ * drg get securityscan
 
-Dredge is an open source project that is just getting started. Our guiding principles:
+### Add your own workflows
+ * Build workflows on top of resources
+
+# Extending Dredge
+
+The resources available in Dredge can be extended by users by creating a resource definition. The resource definition contains the name of the resource, the field definitions and the command definitions. The command definitions are abstract and need to be implemented by the resource provider. Workflows can be added to the Dredgefile in order to automate tasks across multiple resources. See [the docs](/docs) for more information.
+
+Dredge uses the following principles:
 
 {% include feature_row %}
 
-# Get involved
+# Vision
 
-Do you want to get a demo, try it out yourself or contribute? Let use know!
+There is a proliferation of DevOps tools. Each project puts together a set of tools in a specific way, creating their bespoke workflows and processes to develop and operate the software. This leads to a large cognitive load for the engineers, makes getting started on projects difficult and ultimately wastes engineering resources.
 
-<form id="involved" action="https://send.pageclip.co/cmwVdVkJXG1zMYsyNirGDLHhhlJGipyL/get-involved" method="post">
-  <label>Name</label>
-  <input type="text" name="name"/>
-  <label>Email</label>
-  <input type="text" name="email"/>
-  <input type="submit" value="Get involved" class="btn btn--light-outline btn--large" style="margin-top: 20px; width: 100%">
-</form>
+Dredge uses a standardized set of resources as an abstraction for DevOps tools. This makes it easy for engineers to discover and execute the workflows for the project, instead of depending on tribal knowledge or READMEs.
 
-# Examples
-
-| DESIGN DOCS | LOCAL ENV | PRs | TICKETS | INCIDENTS |
-|Reference and search the design docs, wherever they live.|Setup the local environment to get the project running.|Create a PR following the project standards.|Open, close and work on tickets. Search for related tickets.|Find the runbooks. Remediate well-known issues.|
+By abstracting specific tools into generic resources, Dredge will enable a loosely coupled interoperability between DevOps tools. Workflows operate on abstract resources, enabling replacing tools and reusing workflows between projects with different tooling.
