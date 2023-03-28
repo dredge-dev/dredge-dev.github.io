@@ -4,7 +4,293 @@ permalink: /docs/dredgefile/
 excerpt: "Format and features of the Dredgefile"
 ---
 
-A Dredgefile is a YAML file describing workflows that consist of steps. Workflows are executed in an environment and can be grouped into buckets.
+A Dredgefile is a YAML file that describes resources and workflows. Resources expose commands implemented by providers. Workflows consist of step, that are executed in an environment and can be grouped into buckets. The main sections include `resources`, `workflows` and `buckets`.
+
+An example Dredgefile for a Go project with releases on GitHub could look like this:
+
+```yaml
+resources:
+  release:
+    - provider: github-releases
+workflows:
+  - name: hello
+    description: Say hello
+    steps:
+      - shell:
+          cmd: echo hello
+buckets:
+  - name: ci
+    description: Bucket for CI workflows
+    workflows:
+      - name: build
+        description: Build the project
+        steps:
+          - shell:
+              cmd: go build
+```
+
+The Dredgefile defines that `releases` for the project are provided by `github-releases`, there is a workflow that says hello and there is a bucket of CI workflows that contains a `build` workflow. The `drg` command line can now be used to execute the following workflows:
+
+ - `drg get release` to get the releases for the project 
+ - `drg hello` to say hello
+ - `drg ci build` to execute the build CI workflow
+
+The different parameters for [resources](#resources), [providers](#providers), [workflows](#workflows) and [buckets](#buckets) are defined below.
+
+## Resources
+
+The resources section defines the resources used by Dredge to manage various aspects of the project, such as deployment, documentation, issue tracking, and release management. Each resources has a set of fields and a set of commands. The list of resources for a given type can be retrieved by executing `drg get <resource>`. For example `drg get release` gets the releases for the project, in this case fetching them from GitHub releases.
+
+```yaml
+resources:
+  deploy:
+    - provider: local-docker-compose
+      config:
+        env: local
+        image: fryckbos/dredge-example
+        path: .
+  doc:
+    - provider: local-doc
+      config:
+        path: docs
+  issue:
+    - provider: github-issues
+  release:
+    - provider: github-releases
+```
+
+### Deploy
+
+The `deploy` sub-section lists the deployment providers and their configurations. In this example, the `local-docker-compose` provider is used to deploy the application locally using Docker Compose.
+
+```yaml
+deploy:
+  - provider: local-docker-compose
+    config:
+      env: local
+      image: fryckbos/dredge-example
+      path: .
+```
+
+#### Fields
+The `deploy` resource has four fields: name, version, instances, and type.
+
+ * name:
+   * Description: Name
+   * Type: string
+   * This field represents the unique name or identifier of the deployment.
+
+ * version:
+   * Description: Version
+   * Type: string
+   * This field represents the version of the deployed application or service.
+
+  * instances:
+   * Description: Number of instances
+   * Type: integer
+   * This field represents the number of instances of the deployed application or service.
+
+ * type:
+   * Description: Instance type
+   * Type: string
+   * This field represents the type of the instances, which may refer to the underlying infrastructure or hardware resources, such as CPU, memory, or other specifications.
+
+#### Commands
+The `deploy` resource has three commands: get, describe, and update.
+
+ * get:
+   * Inputs: None
+   * OutputType: []deploy
+   * The get command retrieves a list of all deployments. It doesn't require any input parameters and returns an array of deploy objects.
+
+ * describe:
+    * Inputs: name
+    * OutputType: object
+    * The describe command provides detailed information about a specific deployment. The command returns an object containing the complete set of details for the requested deployment.
+
+ * update:
+    * Inputs: name
+    * OutputType: deploy
+    * The update command updates an existing deployment with new field values. The command returns the updated deploy object.
+
+### Doc
+The `doc` sub-section lists the documentation providers and their configurations. In this example, the `local-doc` provider is used to find the documentation from the docs folder in the repo.
+
+```yaml
+doc:
+  - provider: local-doc
+    config:
+      path: docs
+```
+
+#### Fields
+The `doc` resource has four fields: name, author, location, and date.
+
+ * name:
+   * Description: Name
+   * Type: string
+   * This field represents the unique name or identifier of the document.
+
+ * author:
+   * Description: Author
+   * Type: string
+   * This field represents the author or creator of the document.
+
+ * location:
+   * Description: Location
+   * Type: string
+   * This field represents the location or path of the document, which could be a local file path or a URL.
+
+ * date:
+   * Description: Last updated date
+   * Type: date
+   * This field represents the date when the document was last updated.
+
+#### Commands
+The `doc` resource has two commands: get and search.
+
+ * get:
+   * Inputs: None
+   * OutputType: []doc
+   * The get command retrieves a list of all documents. It doesn't require any input parameters and returns an array of doc objects.
+
+ * search:
+   * Inputs: text
+   * OutputType: []doc
+   * The search command searches for documents based on the given text. The command returns an array of doc objects that match the search criteria.
+
+### Issue
+The `issue` sub-section lists the issue tracking providers. In this example, the `github-issues` provider is used to manage project issues on GitHub.
+
+```yaml
+issue:
+  - provider: github-issues
+```
+
+#### Fields
+The `issue` resource has five fields: name, title, type, state, and date.
+
+* name:
+   * Description: Issue name
+   * Type: string
+   * This field represents the unique name or identifier of the issue.
+
+ * title:
+   * Description: Issue title
+   * Type: string
+   * This field represents the human-readable title of the issue, providing a brief and clear description of the problem or feature request.
+
+ * type:
+   * Description: Issue type
+   * Type: string
+   * This field represents the type of the issue, such as "bug", "feature request", "enhancement", etc.
+ 
+ * state:
+   * Description: Issue state
+   * Type: string
+   * This field represents the current state of the issue, such as "open", "closed", "in progress", etc.
+
+ * date:
+   * Description: Issue creation date
+   * Type: date
+   * This field represents the date when the issue was created.
+
+#### Commands
+The `issue` resource has two commands: get and create.
+
+ * get:
+   * Inputs: None
+   * OutputType: []issue
+   * The get command retrieves a list of all issues. It doesn't require any input parameters and returns an array of issue objects.
+
+ * create:
+   * Inputs: None
+   * OutputType: issue
+   * The create command creates a new issue. There are no default input fields as the provider specifies the inputs they require to create an issue.
+
+### Release
+The `release` sub-section lists the release management providers. In this example, the `github-releases` provider is used to manage project releases on GitHub.
+
+```yaml
+release:
+  - provider: github-releases
+```
+
+#### Fields
+The `release` resource has five fields: name, date, and title.
+
+ * name:
+   * Description: Release name
+   * Type: string
+   * This field represents the name of the release, typically used to identify the release in a unique and descriptive manner, such as version numbers or code names.
+
+ * date:
+   * Description: Release date
+   * Type: date
+   * This field represents the date of the release. The date type ensures that the value is a valid date format.
+
+ * title:
+   * Description: Release title
+   * Type: string
+   * This field represents the title of the release, which is a more human-readable and descriptive name for the release. It may provide context or highlight major features or changes introduced in that particular release.
+
+#### Commands
+The `release` resource has two commands: get, search and describe.
+
+ * get:
+    * Inputs: None
+    * OutputType: []release
+    * The get command retrieves a list of all releases. It doesn't require any input parameters and returns an array of release objects.
+
+ * search:
+   * Inputs: text
+   * OutputType: []release
+   * The search command searches for releases based on a given text input. It takes a single input parameter text, which is used to filter the list of releases based on matching criteria. The command returns an array of release objects that match the provided text.
+
+* describe:
+   * Inputs: name
+   * OutputType: object
+   * The describe command provides detailed information about a specific release identified by its name. It takes a single input parameter name, which corresponds to the name of the release. The command returns an object containing the complete set of details for the requested release.
+
+## Providers
+
+Providers are responsible for implementing the various commands defined for each resource. Dredge supports a range of providers that can be used to manage resources such as deployments, documentation, issues, and releases. Each provider has its own specific configuration options and capabilities.
+
+The following is a list of currently supported providers:
+ * `github-releases` for the release resource
+ * `github-issues` for the issue resource
+ * `local-docker-compose` for the deploy resource
+ * `local-doc` for the doc resource
+
+As Dredge continues to evolve, the number of supported providers will increase to accommodate a wider range of use cases and platforms. To ensure seamless integration and extensibility, the mechanism for adding new providers will be enhanced, allowing users to easily plug in custom providers as needed.
+
+### Deploy providers
+
+#### local-docker-compose
+The local-docker-compose provider allows management of local deployments using Docker Compose. This provider requires a docker-compose.yml file to be present in the project.
+
+Provider configuration
+* `env`: The environment of the deployment (e.g., local, development, staging, production).
+* `image`: The name of the Docker image to be used for the deployment.
+* `path`: The path to the directory containing the `docker-compose.yml` file.
+
+### Doc providers
+
+#### local-doc
+The local-doc provider manages project documentation stored locally in the repository. This provider scans the specified directory for documentation files.
+
+Provider configuration
+* `path`: The path to the directory containing the documentation files.
+
+### Issues providers
+
+#### github-issues
+The github-issues provider integrates with GitHub to manage project issues. The `gh` command line utility is used to interact with Github, this provider does not require configuration.
+
+### Release providers
+
+#### github-releases
+The github-releases provider manages project releases through GitHub. The `gh` command line utility is used to interact with Github, this provider does not require configuration.
 
 ## Workflows
 
@@ -211,19 +497,19 @@ workflows:
 
 ### Edit Dredgefile step
 
-Use the `edit_dredgefile` step to add workflows, buckets or variables to the calling Dredgefile. It should be used for Dredgefiles that help developers create or extend their Dredgefile and can only be used when called through an [exec command](/docs/drg/#exec-command).
+Use the `edit_dredgefile` step to add workflows, buckets or variables to the calling Dredgefile. It should be used for Dredgefiles that help developers create or extend their Dredgefile. This step can be part of a remote `setup` workflow called through an [exec command](/docs/drg/#exec-command).
 
 edit_dredgefile fields:
  - `add_variables: map` - [Variables](#variables) to add to the Dredgefile
  - `add_workflows: []Workflow` - [Workflows](#workflows) to add to the Dredgefile
  - `add_buckets: []Bucket` - [Buckets](#buckets) to add to the Dredgefile
 
-For example, an `init` workflow to setup a Python project in `./python.Dredgefile`:
+For example, an `setup` workflow to setup a Python project from the [dredge-repo](https://github.com/dredge-dev/dredge-repo/blob/main/python/Dredgefile):
 
 ```yaml
 workflows:
-  - name: init
-    description: Init a new python project
+  - name: setup
+    description: Setup a new python project
     steps:
       - template:
           input: print("hello")
@@ -237,10 +523,10 @@ workflows:
                     cmd: python3 main.py
 ```
 
-To execute the workflow, use the [exec](/docs/drg/#exec-command) or [init](/docs/drg/#init-command) command:
+To execute the workflow, use the [exec](/docs/drg/#exec-command) command:
 
 ```
-$ drg init ./python.Dredgefile
+$ drg exec python setup
 ```
 
 This adds the `run` workflow the the Dredgefile in the current directory:
@@ -268,29 +554,25 @@ if fields:
  - `cond: string` - Templated string (eg. `{{ .EXISTS }}`). Execute the list of steps if `cond` is true-ish (`true`, `t`, `yes`, `1`)
  - `steps: []Step` - The list of steps to execute
 
-The example below asks the user whether they want to use GitHub issues for issue tracking. The `issue` bucket from `github/issues` is imported into the Dredgefile if they selected `true`.
+The example setup workflow below asks the user whether they want to initialize a git repo.
 
 {% raw %}
 ```yaml
 workflows:
-- name: init
+- name: setup
   inputs:
-  - name: ISSUES
-    description: Use GitHub issues for issue tracking
+  - name: GINIT
+    description: Inititalize a git repo
     type: select
     values:
     - "true"
     - "false"
   steps:
   - if:
-      cond: "{{ .ISSUES }}"
+      cond: "{{ .GINIT }}"
       steps:
-      - edit_dredgefile:
-          add_buckets:
-          - name: issue
-            import:
-              source: github/issues
-              bucket: issue
+      - shell:
+          cmd: git init
 ```
 {% endraw %}
 
@@ -320,6 +602,89 @@ workflows:
       source: github/issues
       bucket: issue
       workflow: create
+```
+
+### Execute a resource command
+
+Execute a resource command by using `execute`. The output of the command can be registered in a variable.
+
+execute fields:
+ * `resource`: name of the resource (eg. deploy)
+ * `command`: name of the command to execute on the provided resource (eg. get)
+ * `register`: name of the variable to store the result of the command
+
+The following example first executes the `get` command on the `release` resource and uses the result to execute the `update` command on the `deploy` resource.
+
+```yaml
+workflows:
+  - name: local-latest
+    description: deploy the latest version to local
+    steps:
+      - execute:
+          resource: release
+          command: get
+          register: releases
+      - set:
+          name: local
+          version: "{{ (index .releases 0).name }}"
+          instances: 1
+      - confirm:
+          message: Latest release is {{ .version }}, deploy to {{ .name }}?
+      - execute:
+          resource: deploy
+          command: update
+```
+
+### Set a variable value
+
+Set a variable by providing a map of variable names to values.
+
+The following example set the `name` variable to local, the `version` variable to the output of the `"{{ (index .releases 0).name }}"` template and the `instances` variable to 1:
+
+```yaml
+workflows:
+  - name: set-vars
+    steps:
+      - set:
+          name: local
+          version: "{{ (index .releases 0).name }}"
+          instances: 1
+```
+
+### Output a log message
+
+Output a log message by providing the message and the level for the message.
+
+log fields:
+ * `level`: the log level (fatal, error, warn, info, debug, trace). Debug and trace message are only show if `drg` is running in verbose mode
+ * `message`: the message to log
+
+The following example set the `name` variable to local, the `version` variable to the output of the `"{{ (index .releases 0).name }}"` template and the `instances` variable to 1:
+
+```yaml
+workflows:
+  - name: print-log
+    steps:
+      - log:
+          level: info
+          message: "My first log message"
+```
+
+### Ask the user for confirmation
+
+Asks the use to confirm before proceeding to execute the workflow. If the user does not confirm, the workflow is aborted.
+
+confirm fields:
+ * `message`: the confirmation message
+
+The following example ask the user 'Are you sure?'. If the user responds 'no', the workflow is aborted.
+
+```yaml
+workflows:
+  - name: please-confirm
+    steps:
+      - confirm:
+          message: Are you sure?
 ```
 
 ## Buckets
