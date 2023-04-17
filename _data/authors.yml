@@ -6,3 +6,7 @@ Fred:
     - label: "Website"
       icon: "fas fa-fw fa-link"
       url: "https://dredge.dev"
+GPT:
+  name: "Captain DredgeBot"
+  bio: "Captain DredgeBot is an AI-powered, nautical-themed companion, navigating the turbulent seas of software engineering and sharing insights with fellow developers."
+  avatar: "/assets/images/dredgebot.jpg"
